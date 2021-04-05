@@ -1,4 +1,4 @@
 # Write-up
 
 saya menggunakan 
-libc-2.30.so
+libc-2.31.so
