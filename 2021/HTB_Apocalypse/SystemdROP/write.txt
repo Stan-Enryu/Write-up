@@ -1,0 +1,86 @@
+$ checksec ./system_drop
+[*] '/media/sf_CTF/HTB_Apocalypse/SystemdROP/system_drop'
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+$ file ./system_drop
+./system_drop: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=62fa734d6f39650844d0c069a26d06e655bf12b4, not stripped
+
+Reversing
+
+int  main(int argc, const char **argv, const char **envp)
+{
+  char buf[24];
+  alarm(0xFu);
+  read(0, &buf, 0x100);
+  return 1;
+}
+
+Ada function yang menarik yaitu _syscall yang diberikan didalam codenya.
+gambar 1
+
+Pikiran pertama kali muncul yaitu melakukan ret2csu dan srop.
+
+Ret2csu digunakan untuk menuliskan frame srop dan "/bin/sh" di dalam Segment .bss .
+
+Srop digunakan untuk memanggil "/bin/sh".
+
+Pada main function ada vulnerability buffer overflow. Dimana setelah return dapat melakukan rop chain dengan sisa 224(0x100 - 24 - 8(rbp)) bytes.
+
+Setelah return main, penulis memasukan payload read(0, bss + 0x100, 0x500) + leave
+
+Ret2csu dapat dilakukan dengan function __libc_csu_init
+gambar 2
+
+
+0x4005b0 <__libc_csu_init+64>:       mov    rdx,r15
+0x4005b3 <__libc_csu_init+67>:       mov    rsi,r14
+0x4005b6 <__libc_csu_init+70>:       mov    edi,r13d
+0x4005b9 <__libc_csu_init+73>:       call   QWORD PTR [r12+rbx*8]
+
+Pada gadget diatas dapat memanggil read(0, bss + 0x100, 0x500)
+Dengan syarat
+r13 = edi = 0
+r14 = rsi = bss + 0x100
+r15 = rdx = 0x500
+r12 = address GOT Read
+rbx = 0
+
+0x4005bd <__libc_csu_init+77>:       add    rbx,0x1
+0x4005c1 <__libc_csu_init+81>:       cmp    rbp,rbx
+0x4005c4 <__libc_csu_init+84>:       jne    0x4005b0 <__libc_csu_init+64>
+
+Setelah memanggil read, ada pemeriksaan untuk jump ke __libc_csu_init+64. penulis akan menghindarinya dengan set rbp == rbx.
+sebelumnya nilai rbx = 0 ditambah 1 menjadi rbx = 1, jadi rbp harus 1.
+
+Bagaimana cara agar dapat mengisi register(r13, r14, r15, r12, rbx, rbp) diatas yaitu dengan gadget dibawah:
+0x4005ca <__libc_csu_init+90>:       pop    rbx
+0x4005cb <__libc_csu_init+91>:       pop    rbp
+0x4005cc <__libc_csu_init+92>:       pop    r12
+0x4005ce <__libc_csu_init+94>:       pop    r13
+0x4005d0 <__libc_csu_init+96>:       pop    r14
+0x4005d2 <__libc_csu_init+98>:       pop    r15
+0x4005d4 <__libc_csu_init+100>:      ret
+
+Return ke 0x4005b0 untuk call read(0, bss + 0x100, 0x500)
+
+Masukan payload ret2csu + syscall + srop frame ke (bss + 0x100)
+
+Stack pivot dengan gadget leave agar dapat melakukan rop chain dengan payload yang sudah dimasukan sebelumnya
+Leave :
+mov rsp, rbp
+pop rbp
+
+Sebelumnya set rbp menjadi bss + 0x100 - 8 .
+
+ret2csu digunakan untuk memanggil read(0,bss+0x500, 15) dan masukan /bin/sh padding 15 dengan \x00 digunakan untuk  membuat rax menjadi 15 dan nanti ketika return ke syscall dapat memanggil sigreturn.
+Sebelum memanggil sigreturn, pastikan membuat frame untuk call execve("/bin/sh",0,0)
+Tambahan rsp harus diatas bss+0x800, kalau dibawah akan error.
+
+Hasil akhir payload
+
+gambar 4
+
+
