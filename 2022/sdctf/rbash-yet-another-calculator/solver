@@ -1,0 +1,7 @@
+== proof-of-work: disabled ==
+rbash-5.0$ read -a arr < ./
+flag-xEpAN7X3tGYjt4Y0p0FD.txt  jail.sh
+rbash-5.0$ read -a arr < ./flag-xEpAN7X3tGYjt4Y0p0FD.txt
+rbash-5.0$ echo ${arr[@]}
+sdctf{red1r3ct1ng_std1n_IS_p3rm1tt3d_1n_rb45h!}
+rbash-5.0$ 

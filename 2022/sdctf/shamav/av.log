@@ -1,0 +1,41 @@
+----- Welcome to ShamAV, version alpha 0.0.1 -----
+***** Begin System information *****
+Working directory: /media/sf_CTF/sdctf/shamav
+Directory listing:
+total 2228
+drwxrwx--- 1 root vboxsf    4096 May  7 10:05 .
+drwxrwx--- 1 root vboxsf    4096 May  7 08:12 ..
+-rwxrwx--- 1 root vboxsf     153 May  7  2022 av.log
+-rwxrwx--- 1 root vboxsf     210 May  7 09:55 command
+-rwxrwx--- 1 root vboxsf       9 May  7 10:05 flag.txt
+-rwxrwx--- 1 root vboxsf     683 May  7 10:03 launcher.sh
+-rwxrwx--- 1 root vboxsf     259 May  7 09:55 malware-hashes.txt
+drwxrwx--- 1 root vboxsf       0 May  7 09:58 quarantine
+-rwxrwx--- 1 root vboxsf     377 May  7 10:05 scan
+-rwxrwx--- 1 root vboxsf      45 May  7 10:07 seed
+-rwxrwx--- 1 root vboxsf    2656 May  7 10:08 server.py
+-rwxrwx--- 1 root vboxsf 2258872 May  7 09:50 strace_base64
+root
+***** End System information *****
+[I] Ready for the next client
+[I] Scanning file /tmp/flag.txt
+[D] Copying file from /tmp/flag.txt to ./quarantine/sham-av-706aa858666e631216a9595b7b301743addab942c37de16b78205976ddb09954
+[I] Scan complete: /tmp/flag.txt
+[I] Scan result: File scan completed. No malware detected.
+[I] Ready for the next client
+[I] Scanning file /tmp/flag.txt
+[D] Copying file from /tmp/flag.txt to ./quarantine/sham-av-4f61269995f81d29264194fb8842f74f9c346c55d4c88285e24068ac4ee20015
+[I] Scan complete: /tmp/flag.txt
+[I] Scan result: File scan completed. No malware detected.
+[I] Ready for the next client
+[I] Scanning file /tmp/flag.txt
+[D] Copying file from /tmp/flag.txt to ./quarantine/sham-av-2ae60df8d9406929106b67242b683080c96cb183695e80a7694a8b434dd5d5b4
+[I] Scan complete: /tmp/flag.txt
+[I] Scan result: File scan completed. No malware detected.
+[I] Ready for the next client
+Traceback (most recent call last):
+  File "/media/sf_CTF/sdctf/shamav/./server.py", line 85, in <module>
+    conn, _ = s.accept()
+  File "/usr/lib/python3.9/socket.py", line 293, in accept
+    fd, addr = self._accept()
+KeyboardInterrupt
