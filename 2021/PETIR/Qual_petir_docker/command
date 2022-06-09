@@ -1,0 +1,36 @@
+make-docker ynetd -p 13301 -n first -o ubuntu:20.04
+make-docker ynetd -p 13302 -n can1 -o ubuntu:16.04
+make-docker ynetd -p 13303 -n ret1 -o ubuntu:20.04
+make-docker ynetd -p 13304 -n fmt1 -o ubuntu:20.04
+make-docker ynetd -p 13305 -n can2 -o ubuntu:16.04
+make-docker ynetd -p 13306 -n ret2 -o ubuntu:20.04
+make-docker ynetd -p 13307 -n fmt2 -o ubuntu:20.04
+make-docker ynetd -p 13308 -n ara -o ubuntu:20.04
+
+docker-compose up --build -d
+
+docker cp [CONTAINER ID]:/usr/lib/x86_64-linux-gnu/libc-2.31.so .
+
+for ret2
+patchelf --set-interpreter ./ld.so ./soal
+
+patchelf --replace-needed libc.so.6 ./libc-2.31.so ./soal
+
+
+
+We can use patchelf:
+
+patchelf --replace-needed liboriginal.so.1 libreplacement.so.1 my-program
+
+We can also remove a dependency:
+
+patchelf --remove-needed libfoo.so.1 my-program
+
+Add a dependency:
+
+patchelf --add-needed libfoo.so.1 my-program
+
+Or change the path where to search for the libraries (rpath):
+
+patchelf --set-rpath /path/to/lib:/other/path my-program
+

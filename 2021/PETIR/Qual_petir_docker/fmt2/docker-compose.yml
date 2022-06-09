@@ -1,0 +1,10 @@
+version: '2'
+services:
+  fmt2:
+    image: fmt2
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "13303:13303"

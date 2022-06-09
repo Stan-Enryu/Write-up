@@ -1,0 +1,10 @@
+version: '2'
+services:
+  ara:
+    image: ara
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "13304:13304"

@@ -1,0 +1,54 @@
+make-docker ynetd -p 11101 -n first -o ubuntu:20.04
+make-docker ynetd -p 11102 -n can1 -o ubuntu:16.04
+make-docker ynetd -p 11103 -n ret1 -o ubuntu:20.04
+make-docker ynetd -p 11104 -n fmt1 -o ubuntu:20.04
+make-docker ynetd -p 13301 -n can2 -o ubuntu:16.04
+make-docker ynetd -p 13302 -n ret2 -o ubuntu:20.04
+make-docker ynetd -p 13303 -n fmt2 -o ubuntu:20.04
+make-docker ynetd -p 13304 -n ara -o ubuntu:20.04
+
+docker-compose up --build -d
+
+docker cp [CONTAINER ID]:/usr/lib/x86_64-linux-gnu/libc-2.31.so .
+
+for ret2
+patchelf --set-interpreter ./ld.so ./soal
+
+patchelf --replace-needed libc.so.6 ./libc-2.31.so ./soal
+
+
+We can use patchelf:
+
+patchelf --replace-needed liboriginal.so.1 libreplacement.so.1 my-program
+
+We can also remove a dependency:
+
+patchelf --remove-needed libfoo.so.1 my-program
+
+Add a dependency:
+
+patchelf --add-needed libfoo.so.1 my-program
+
+Or change the path where to search for the libraries (rpath):
+
+patchelf --set-rpath /path/to/lib:/other/path my-program
+
+Server : nc 104.248.150.36 11101
+Server : nc 104.248.150.36 11102 
+Server : nc 104.248.150.36 11103 
+Server : nc 104.248.150.36 11104
+Server : nc 104.248.150.36 13301 
+Server : nc 104.248.150.36 13302 
+Server : nc 104.248.150.36 13303
+Server : nc 104.248.150.36 13304 
+
+Binary Exploitation
+
+Ara : PETIR{R3TuuurNNN_CSUUUUUUUUU_Ara_ARA_ONEESAN}
+can1 : PETIR{L34k_C4n4Ry_w1Th_Pr1NtF_C00l}
+can2 : PETIR{L3ak_C4nary_w1Th_F0rM4T_STr1Ng_HHH}
+first : PETIR{1Nt_0v3rFl0w_4nD_p4SS1ng_P4r4M}
+fmt1 : PETIR{B4s1c_F0rm4t_Str1ng_EZ}
+fmt2 : PETIR{Pl34s3_S3npAi_An0th3r_H4rd_FMT}
+ret1 : PETIR{F1nd_B4s3_LIBC_4ND_r3Turn_SySt3m}
+ret2 : PETIR{S0000_HARD_4N0th3r_Th3_N3XT_LEVEL}

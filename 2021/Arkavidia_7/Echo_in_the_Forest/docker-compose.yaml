@@ -1,0 +1,10 @@
+version: '2'
+services:
+  echo:
+    image: echo
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "10001:10001"

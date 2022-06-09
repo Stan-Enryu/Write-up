@@ -1,0 +1,10 @@
+version: '2'
+services:
+  ret1:
+    image: ret1
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "11103:11103"

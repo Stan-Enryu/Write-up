@@ -1,0 +1,10 @@
+version: '2'
+services:
+  can1:
+    image: can1
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "11102:11102"
