@@ -1,0 +1,14 @@
+service rop
+{
+        disable = no
+        socket_type = stream
+        protocol = tcp
+        wait = no
+        user = rop
+        type = UNLISTED
+        port = 7778
+        bind = 0.0.0.0
+        server = /home/rop/run
+        per_source = 10
+        rlimit_cpu = 20
+}

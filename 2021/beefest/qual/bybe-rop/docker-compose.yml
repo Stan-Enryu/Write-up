@@ -1,0 +1,10 @@
+version: '3'
+services:
+  rop:
+    image: rop
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "7778:7778"

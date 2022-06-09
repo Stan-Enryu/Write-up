@@ -1,0 +1,14 @@
+service voteme
+{
+        disable = no
+        socket_type = stream
+        protocol = tcp
+        wait = no
+        user = voteme
+        type = UNLISTED
+        port = 11102
+        bind = 0.0.0.0
+        server = /home/voteme/run
+        per_source = 10
+        rlimit_cpu = 20
+}

@@ -1,0 +1,10 @@
+version: '3'
+services:
+  mapme:
+    image: mapme
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "7777:7777"
