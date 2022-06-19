@@ -1,0 +1,13 @@
+mutation createPost($name: String!, $image: String, $content: String){
+    createPost(name: $name, image: $image, content: $content){
+        author{
+            id
+            password
+            username
+        }
+        content
+        id
+        image
+        name
+    }
+}

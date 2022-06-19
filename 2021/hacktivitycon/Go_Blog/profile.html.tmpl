@@ -1,0 +1,22 @@
+{{define "styles"}}
+  <style></style>
+{{ end }}
+{{define "content"}}
+    <div class="container">
+      <div class="row">
+        <div class="jumbotron mt-5">
+            <form action="/profile" method="post">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Username" name="username"  value="{{.CurrentUser.Username}}">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput2" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput2" placeholder="Email" readonly value="{{.CurrentUser.Email}}">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+      </div>
+    </div>
+{{end}}

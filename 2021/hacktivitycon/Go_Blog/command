@@ -1,0 +1,25 @@
+{
+[
+{
+5e6ef653-0f54-4e0b-b9dd-c5898bcfb20a 
+	{
+	608a3505-2fa9-46b6-b149-e085f3f2e85b 
+	congon4tor  
+	1ebbab4803520862d1a5ba5bcc192643e03562c0a59a0b48911336e0c07e0a4ad8d4710b385935a35c176bb29c847281ba75721c849105f37d24b8e934c3a1ac 
+	congo@congon4tor.com 
+	false 
+	2021-07-24 13:26:01.837939032 +0200 +0200 
+	2021-07-24 13:26:01.837938977 +0200 +0200
+	} 
+Welcome to GoBlog Welcome to GoBlog a website where you can post all your travel adventures for others to enjoy. Talk about the places you visited, the food you tried, the people you met and the culture of the place you visited. It is also a good idea to give others some tips and tricks you learnt during your trip.
+Thanks for sharing with the community!  
+https://www.bloggingwp.com/wp-content/uploads/2018/01/Travel-blog.jpeg 
+2021-07-24 13:42:53.033357338 +0200 +0200 
+2021-07-24 13:42:53.033357391 +0200 +0200
+}
+]
+}
+
+congo@congon4tor.com
+
+{{.Post.Author.ChangePassword "mantap" }}

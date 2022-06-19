@@ -1,0 +1,10 @@
+mutation authenticateUser($username: String!, $password: String!){
+    authenticateUser(username: $username, password: $password){
+        token
+        user{
+            id
+            password
+            username
+        }
+    }
+}

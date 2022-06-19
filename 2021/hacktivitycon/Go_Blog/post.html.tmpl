@@ -1,0 +1,87 @@
+{{define "styles"}}
+    <style>
+        @media (min-width: 992px){
+            header.masthead {
+                padding-top: 12.5rem;
+                padding-bottom: 12.5rem;
+            }
+        }
+        header.masthead {
+            position: relative;
+            margin-bottom: 3rem;
+            padding-top: calc(8rem + 57px);
+            padding-bottom: 8rem;
+            background: no-repeat center center;
+            background-color: #6c757d;
+            background-size: cover;
+            background-attachment: scroll;
+        }
+        header.masthead .page-heading, header.masthead .post-heading, header.masthead .site-heading {
+            color: #fff;
+        }
+        header.masthead .post-heading .meta {
+            font-size: 1.25rem;
+            font-weight: 300;
+            font-style: italic;
+            font-family: "Lora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        header.masthead .post-heading .meta, header.masthead .post-heading .subheading {
+            line-height: 1.1;
+            display: block;
+        }
+        .tint {
+            z-index: 1;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            bottom: 0px;
+            background: rgba(0, 0, 0, 0.7);    
+        }
+        @media (min-width: 992px){
+            .g-lg-5, .gx-lg-5 {
+                --bs-gutter-x: 3rem;
+            }
+        }
+        .g-4, .gx-4 {
+            --bs-gutter-x: 1.5rem;
+        }
+        .content {
+            font-size: 1.25rem;
+        }
+        pre {
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+{{ end }}
+{{define "content"}}
+        <header class="masthead" style="background-image: url('{{.Post.Thumbnail}}')">
+            <div class="tint">
+                <div class="container position-relative px-4 px-lg-5">
+                    <div class="row gx-4 gx-lg-5 justify-content-center">
+                        <div class="col-md-10 col-lg-8 col-xl-7">
+                            <div class="post-heading mt-3">
+                                <h1>{{.Post.Title}}</h1>
+                                <span class="meta">
+                                    Posted by
+                                    {{.Post.Author.Username}}
+                                    on {{.Post.UpdatedAt.Format "02 Jan 06 15:04"}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <pre class="content">{{.Post.Content}}</pre>
+                </div>
+            </div>
+        </div>
+{{end}}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OTP Smash</title>
+</head>
+    <body>
+    <style>
+        .img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 250px;
+        }
+        .otp_entry {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .flag {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .count {
+            margin-left: 250px;
+            margin-top: 50px;            
+
+        }
+    </style>
+    <p class="count">0</p>
+    <img src="/static/otp.png" alt="OTP Image" class="img"/>
+    <br>
+    <form action="/" method="post">
+        <input type="text" name="otp_entry" class="otp_entry">
+        <br><br>
+        <input type="submit" value="Submit" class="otp_entry" >
+    </form>
+    <img src="/static/flag.png" onerror="this.style.display='none'" class="flag"/>
+    </body>
+</html>

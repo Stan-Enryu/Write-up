@@ -1,0 +1,5 @@
+# Dirsearch started Sat Sep 18 14:05:22 2021 as: dirsearch.py -o /media/sf_CTF/hacktivitycon/All_Baked_Up/dir -w /wordlists/directory-list-2.3-small.txt -r -t 200 -e php,txt,html -f -u http://challenge.ctf.games:32121/
+
+301     0B   http://challenge.ctf.games:32121/index.html    -> REDIRECTS TO: ./
+404    59B   http://challenge.ctf.games:32121/static/
+301     0B   http://challenge.ctf.games:32121/static    -> REDIRECTS TO: static/

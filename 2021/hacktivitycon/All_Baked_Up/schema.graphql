@@ -1,0 +1,54 @@
+"""Auth info for a user"""
+type Auth {
+  """The token"""
+  token: String
+
+  """The user"""
+  user: User!
+}
+
+type Mutation {
+  authenticateUser(username: String!, password: String!): Auth
+  createPost(name: String!, image: String, content: String): Post
+  createUser(username: String!, password: String!): User
+}
+
+"""A cool post written by one of our users"""
+type Post {
+  """The writter of the post"""
+  author: User
+
+  """The content os the post"""
+  content: String
+
+  """The id of the post"""
+  id: Int!
+
+  """Image of the post"""
+  image: String
+
+  """The name of the post"""
+  name: String
+}
+
+type Query {
+  flag: String
+  post(
+    """The name of the post"""
+    name: String!
+  ): [Post]
+  posts: [Post]
+}
+
+"""A user of our website"""
+type User {
+  """The id of the user"""
+  id: Int!
+
+  """The salted SHA1 hash of the users password"""
+  password: String
+
+  """The username of the user"""
+  username: String
+}
+

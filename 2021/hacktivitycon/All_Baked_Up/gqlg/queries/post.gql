@@ -1,0 +1,13 @@
+query post($name: String!){
+    post(name: $name){
+        author{
+            id
+            password
+            username
+        }
+        content
+        id
+        image
+        name
+    }
+}

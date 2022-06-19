@@ -1,0 +1,13 @@
+query posts{
+    posts{
+        author{
+            id
+            password
+            username
+        }
+        content
+        id
+        image
+        name
+    }
+}

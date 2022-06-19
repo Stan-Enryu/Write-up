@@ -1,0 +1,32 @@
+{{define "styles"}}
+  <style></style>
+{{ end }}
+{{define "content"}}
+    <div class="container">
+      <div class="row">
+        <div class="jumbotron">
+          <ul>
+            <div class="row mt-5">
+              {{range .Posts}} 
+                <div class="col-md-12">
+                  <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col p-4 d-flex flex-column position-static">
+                      <h3 class="mb-0">{{.Title}}</h3>
+                      <div class="mb-1 text-muted">{{.UpdatedAt.Format "02 Jan 06 15:04"}}</div>
+                      <p class="card-text mb-auto">{{ printf "%.250s..." .Content}}</p>
+                      <a href="/post/{{.ID}}" class="stretched-link">Continue reading</a>
+                    </div>
+                    <div class="col-auto d-none d-lg-block">
+                      <img src="{{.Thumbnail}}" alt="Thumbnail" height="250">
+                    </div>
+                  </div>
+                </div>
+              {{else}}
+                No posts
+              {{end}}
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+{{end}}

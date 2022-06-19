@@ -1,0 +1,13 @@
+- env:
+        - name: FLAG
+          value: TEST_FLAG
+        - name: AMDIN_PASSWORD
+          value: qwerty123
+        - name: COOKIE_SECRET
+          value: TEST_SECRET
+
+
+congon4tor:qwerty123
+
+
+flag{589882d62d1c899d8b85db1af2076b39}
