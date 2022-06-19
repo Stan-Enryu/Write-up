@@ -1,0 +1,14 @@
+service ezfile
+{
+        disable = no
+        socket_type = stream
+        protocol = tcp
+        wait = no
+        user = ezfile
+        type = UNLISTED
+        port = 11102
+        bind = 0.0.0.0
+        server = /home/ezfile/run
+        per_source = 10
+        rlimit_cpu = 20
+}

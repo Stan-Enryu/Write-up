@@ -1,0 +1,10 @@
+version: '2'
+services:
+  ezstack:
+    image: ezstack
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "11101:11101"

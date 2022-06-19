@@ -1,0 +1,34 @@
+#ez stack
+pset ./libc.so.6 ./chall
+patchelf --replace-needed libc.so.6 ./libc.so.6 ./chall
+
+add docker files
+COPY ./ld-2.31.so .
+COPY ./libc.so.6 .
+
+#Make Docker
+#qual
+make-docker xinetd -n ezblind -o ubuntu:latest -p 11101
+make-docker xinetd -n ezfile -o ubuntu:18.04 -p 11102
+make-docker xinetd -n ezheap -o ubuntu:18.04 -p 11103
+
+#final
+make-docker xinetd -n ezstack -o ubuntu:latest -p 11101
+make-docker xinetd -n ezfile2 -o ubuntu:latest -p 11102
+make-docker xinetd -n ezheap2 -o ubuntu:latest -p 11103
+
+
+docker-compose up --build --no-cache -d
+docker exec -it d07728409167 /bin/bash
+
+#flag
+#qual
+ezblind : CSCCTF{Ez_Bl1nD_R0p_4nd_Byp4Ss_Canary_M4nt4p}
+ezfile1 : CSCCTF{Rop_W1th_FILE_t0_Wr1te_4nd_R3ad_S0_G00D_L4h}
+ezheap : CSCCTF{Ez_H3aP_h0use_0f_SsSsSsSp1r1t}
+
+#final
+ezstack : CSCCTF{Ez_pwn_St4cK_P1v0t_L3vel_Up_POGCh4mP}
+ezfile2 : CSCCTF{Rop_W1th_IO_h3lp3r_juMps_UwU}
+ezheap2 : CSCCTF{Ez_H3ap_L4gi_House_Of_Lore_?_or_Wh4t}
+

