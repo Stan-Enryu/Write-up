@@ -1,0 +1,38 @@
+const prompt = require('prompt-sync')()
+
+const _0x57fe=['length','fromCharCode'];
+
+const func1=function(param_1,_0x57fe77){
+
+return _0x57fe[param_1];
+
+};
+
+const process=param=>{
+
+const func1=func1;
+
+let flag='J';
+for(let i=1; i < param[func1(0)]; i+=1){
+    flag+=String[func1(1)](param['charCodeAt'](i) ^ param['charCodeAt'](i-1));
+}
+return flag;
+};
+
+const main = () => {
+    const what = 'J\x05\x06\x07\x1a\x07a\x03JN]\\Y\x08:0\x0112^l9\t=\r2Y_Z_\t8;Ub\x0c(\x12Tc6;<\x0b\\X\x00\t\x0b\tTN'
+    try {
+        const inp = prompt('Your Input: ')
+        if(inp.length === what.length) {
+            if(process(inp) === what) {
+                console.log('Yeay')
+                return;
+            }
+        }
+        console.log('Yikes')
+    } catch (err) {
+        console.log('Yikes')
+    }
+module.exports = {
+	main
+}
