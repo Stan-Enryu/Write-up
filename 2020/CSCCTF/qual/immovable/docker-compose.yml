@@ -1,0 +1,10 @@
+version: '2'
+services:
+  immovable:
+    image: immovable
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "13337:13337"

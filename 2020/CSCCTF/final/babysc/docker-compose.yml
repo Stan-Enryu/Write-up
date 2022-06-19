@@ -1,0 +1,10 @@
+version: '2'
+services:
+  babysc:
+    image: babysc
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "23339:23339"

@@ -1,0 +1,14 @@
+service babysc
+{
+	disable = no
+	socket_type = stream
+	protocol = tcp
+	wait = no
+	user = babysc
+	type = UNLISTED
+	port = 23339
+	bind = 0.0.0.0
+	server = /home/babysc/babysc
+	per_source = 10
+	rlimit_cpu = 20
+}

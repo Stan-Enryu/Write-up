@@ -1,0 +1,10 @@
+version: '2'
+services:
+  cerpen:
+    image: cerpen
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "13339:13339"

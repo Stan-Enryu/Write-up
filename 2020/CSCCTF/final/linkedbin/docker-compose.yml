@@ -1,0 +1,10 @@
+version: '2'
+services:
+  linkedbin:
+    image: linkedbin
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "23338:23338"

@@ -1,0 +1,14 @@
+service filestream
+{
+	disable = no
+	socket_type = stream
+	protocol = tcp
+	wait = no
+	user = filestream
+	type = UNLISTED
+	port = 23337
+	bind = 0.0.0.0
+	server = /home/filestream/filestream
+	per_source = 10
+	rlimit_cpu = 20
+}

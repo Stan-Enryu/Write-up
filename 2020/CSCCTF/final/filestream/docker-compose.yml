@@ -1,0 +1,10 @@
+version: '2'
+services:
+  filestream:
+    image: filestream
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "23337:23337"

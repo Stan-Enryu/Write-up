@@ -1,0 +1,10 @@
+version: '2'
+services:
+  sanitized:
+    image: sanitized
+    build: .
+    restart: always
+    environment:
+      - TERM=xterm
+    ports:
+      - "13338:13338"
