@@ -1,0 +1,16 @@
+view-source 
+
+you can see the script
+<script>
+		window.CONFIG = window.CONFIG || {
+			buildNumber: "v20190816",
+			debug: false,
+			modelName: "Valencia",
+			correctPin: "8291",
+		}
+	</script>
+
+
+pin : 8291
+
+HTB{V13w_50urc3_c4n_b3_u53ful!!!}
