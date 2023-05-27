@@ -1,4 +1,5 @@
 # Write-up
+Good Pratice
 
 Python Jail
 1. DownUnder CTF 2022 - not a pyjail
